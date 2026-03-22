@@ -1,29 +1,37 @@
 <template>
-  <div class="filters">
-    <div class="search">
-      <input 
-        v-model="searchQuery" 
-        type="text" 
-        placeholder="Поиск по названию или автору..." 
-      />
-    </div>
-    <div class="filter-buttons">
-      <button
-        v-for="option in filterOptions"
-        :key="option.value"
-        @click="$emit('update:filter', option.value)"
-        :class="[
-          'filter-btn',
-          { active: filter === option.value }
-        ]"
-      >
-        {{ option.label }}
-      </button>
-    </div>
-    <div class="stats">
-      <p>
-        Всего: {{ total }} | Прочитано: {{ completed }} | Осталось: {{ total - completed }}
-      </p>
+  <div class="filters card shadow-sm mb-4">
+    <div class="card-body">
+      <!-- Поисковая строка -->
+      <div class="mb-3">
+        <input 
+          v-model="searchQuery" 
+          type="text" 
+          class="form-control" 
+          placeholder="Поиск по названию или автору..." 
+        />
+      </div>
+
+      <!-- Кнопки фильтров -->
+      <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center">
+        <div class="filter-buttons d-flex flex-wrap gap-2">
+          <button
+            v-for="option in filterOptions"
+            :key="option.value"
+            @click="$emit('update:filter', option.value)"
+            :class="[
+              'btn',
+              currentFilter === option.value ? 'btn-success' : 'btn-outline-secondary'
+            ]"
+          >
+            {{ option.label }}
+          </button>
+        </div>
+
+        <!-- Статистика (на мобильных будет под кнопками) -->
+        <div class="stats small text-muted mt-2 mt-md-0">
+          Всего: <strong>{{ total }}</strong> | Прочитано: <strong>{{ completed }}</strong> | Осталось: <strong>{{ total - completed }}</strong>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -34,7 +42,7 @@ import { computed } from 'vue'
 const props = defineProps(['filter', 'books'])
 defineEmits(['update:filter'])
 
-// defineModel доступен в Vue 3.4+
+// Используем defineModel для двусторонней связи
 const searchQuery = defineModel('searchQuery')
 
 const filterOptions = [
@@ -50,48 +58,24 @@ const completed = computed(() =>
 </script>
 
 <style scoped>
+/* Убираем лишние стили, если они дублируют классы Bootstrap */
 .filters {
   background: white;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
 }
-.search {
-  margin-bottom: 15px;
-}
-.search input {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 1em;
-}
+
 .filter-buttons {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 15px;
+  /* Гарантируем, что кнопки переносятся, если места мало */
+  flex-wrap: wrap;
 }
-.filter-btn {
-  padding: 8px 16px;
-  border: 1px solid #ddd;
-  background: white;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-.filter-btn:hover {
-  background: #f0f0f0;
-}
-.filter-btn.active {
-  background: #4CAF50;
-  color: white;
-  border-color: #4CAF50;
-}
-.stats {
-  padding-top: 15px;
-  border-top: 1px solid #eee;
-  color: #666;
-  font-size: 0.9em;
+
+/* Адаптивность для статистики: на узких экранах она уходит вниз */
+@media (max-width: 576px) {
+  .stats {
+    width: 100%;
+    text-align: left;
+    margin-top: 10px !important;
+    border-top: 1px solid #eee;
+    padding-top: 10px;
+  }
 }
 </style>
