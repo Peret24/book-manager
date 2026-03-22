@@ -145,9 +145,7 @@
       </div>
     </main>
     
-    <footer class="text-center py-4 text-muted mt-5">
-      <small>Практическое занятие 15</small>
-    </footer>
+    
   </div>
 </template>
 
